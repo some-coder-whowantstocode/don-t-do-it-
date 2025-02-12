@@ -1,2 +1,0 @@
-add : add todo ex : add "eat"
-rm : remove todo ex : rm `todo id`
