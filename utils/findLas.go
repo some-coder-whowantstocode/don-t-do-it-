@@ -5,47 +5,71 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"time"
+	errorhandler "todo/errorHandler"
 )
 
 func Findlast() {
-	keyword := "pre"
-	f, err := os.OpenFile("./todo.config.txt", os.O_RDWR, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
+	lastdate, location, duration, lastdate_k_w, location_k_w, duration_k_w := "", "", "", "pre", "loc", "dur"
 
-	defer f.Close()
+	f, err := os.OpenFile("./todo.config.txt", os.O_RDWR|os.O_CREATE, 0644)
+	errorhandler.Handler(err)
+
+	defer func() {
+		if err := f.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	scanner := bufio.NewScanner(f)
-	var timestring string
 	for scanner.Scan() {
-		if scanner.Text()[0:3] == keyword {
-			timestring = scanner.Text()[3:]
-
+		if len(scanner.Text()) < 4 {
+			continue
 		}
+		switch scanner.Text()[:3] {
+		case lastdate_k_w:
+			{
+				lastdate = scanner.Text()[4:]
+
+			}
+		case location_k_w:
+			{
+				location = scanner.Text()[4:]
+
+			}
+		case duration_k_w:
+			{
+				duration = scanner.Text()[4:]
+			}
+		}
+
 	}
 
-	fmt.Println(timestring)
-	if timestring == "" {
-		layout := "2006-01-02 15:04:05"
-		date, err := time.Parse(layout, time.Now().String())
-		str := fmt.Sprintf("\n%s:%s\n", keyword, date.Format(layout))
-		fmt.Println(str)
-		if _, err := f.Write([]byte(str)); err != nil {
-			f.Close()
-			log.Fatal("sdfod", err)
-		}
-		if err != nil {
-			log.Fatal(err)
-		} else {
-
-		}
+	layout := "2006-01-02"
+	_, err2 := time.Parse(layout, lastdate)
+	if lastdate == "" || err2 != nil {
+		lastdate = time.Now().Format(layout)
 	}
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+	if location == "" {
+		location = "todoStore"
 	}
 
-	// return nil
+	matched, err3 := regexp.Match(`/\d/g`, []byte(`duration`))
+
+	errorhandler.Handler(err3)
+
+	if duration == "" || !matched {
+		duration = "1"
+	}
+
+	fmt.Println(lastdate, location, duration)
+	path := fmt.Sprintf("./%s/%s.txt", location, lastdate)
+	fmt.Println(path)
+	_, err9 := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0644)
+	errorhandler.Handler(err9)
+
+	// parsedtime, err := time.Parse(layout, lastdate)
+	// fmt.Println(parsedtime.Year())
 }

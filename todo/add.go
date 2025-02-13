@@ -13,7 +13,7 @@ func AddTodo(msg string) {
 		log.Fatal("Error while adding Todo", err)
 	}
 
-	if _, err := f.Write([]byte(msg)); err != nil {
+	if _, err := f.Write([]byte(msg + "\n")); err != nil {
 		f.Close()
 		log.Fatal(err)
 	}
