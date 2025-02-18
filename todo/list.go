@@ -16,26 +16,32 @@ type Task struct {
 	Messsage string
 }
 
-func consoleTodo(task string) (string, string, string) {
-	if task == "" {
-		return "", "", ""
-	}
-
+func DestructureTask(task string) (string, string, string) {
 	trimmedString := task[11:]
 	trimmedString = trimmedString[:len(trimmedString)-9]
 	idPosition := strings.Index(trimmedString, "###ID###")
 	titlePosition := strings.Index(trimmedString, "###TITLE###")
 	messagePosition := strings.Index(trimmedString, "###MESSAGE###")
-
 	id := trimmedString[idPosition+8 : titlePosition]
 	title := trimmedString[titlePosition+11 : messagePosition]
 	message := trimmedString[messagePosition+13:]
 
 	return id, title, message
+
 }
 
-func ListTodo() {
-	filepath := "./task.todo"
+func ConsoleTodo(taskarr []Task) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"ID", "Title", "Message"})
+
+	for _, task := range taskarr {
+		table.Append([]string{task.ID, task.Title, task.Messsage})
+	}
+
+	table.Render()
+}
+
+func ListTask(filepath string) []Task {
 	f, err := os.OpenFile(filepath, os.O_RDONLY|os.O_CREATE, 0644)
 	if err != nil {
 		log.Fatal("Error while listing todo: ", err)
@@ -48,17 +54,20 @@ func ListTodo() {
 		decodedString, err := base64.StdEncoding.DecodeString(string(ecodedString))
 		if err != nil {
 			log.Fatal(err)
-			return
+			return nil
 		}
-		id, title, message := consoleTodo(string(decodedString))
+
+		task := string(decodedString)
+
+		if task == "" {
+			continue
+		}
+
+		id, title, message := DestructureTask(task)
+
 		textarr = append(textarr, Task{id, title, message})
 	}
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"ID", "Title", "Message"})
 
-	for _, task := range textarr {
-		table.Append([]string{task.ID, task.Title, task.Messsage})
-	}
+	return textarr
 
-	table.Render()
 }

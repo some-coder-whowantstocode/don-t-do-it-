@@ -12,6 +12,12 @@ import (
 	// "todo/utils"
 )
 
+func FormatTask(newuuid interface{}, title, msg string) string {
+	formatedMessage := fmt.Sprintf("###START######ID###%s###TITLE###%s###MESSAGE###%s###END###", newuuid, title, msg)
+	encodedMessage := base64.StdEncoding.EncodeToString([]byte(formatedMessage))
+	return encodedMessage + "\n"
+}
+
 func AddTodo(msg, title string) {
 	// path, err := utils.Findpath()
 
@@ -43,16 +49,10 @@ func AddTodo(msg, title string) {
 		return
 	}
 
-	formatedMessage := fmt.Sprintf("###START######ID###%s###TITLE###%s###MESSAGE###%s###END###", newuuid, title, msg)
-	encodedMessage := base64.StdEncoding.EncodeToString([]byte(formatedMessage))
-
-	// if _, err := f.Write([]byte(encodedMessage)); err != nil {
-	// 	f.Close()
-	// 	log.Fatal(err)
-	// }
+	encodedMessage := FormatTask(newuuid, title, msg)
 
 	writer := bufio.NewWriter(f)
-	_, err = writer.WriteString(encodedMessage + "\n")
+	_, err = writer.WriteString(encodedMessage)
 	if err != nil {
 		fmt.Println("Error writing to file:", err)
 		return

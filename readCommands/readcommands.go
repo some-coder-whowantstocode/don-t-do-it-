@@ -5,7 +5,7 @@ import (
 	Todo "todo/todo"
 )
 
-func ReadCommands(command, msg, title string) {
+func ReadCommands(command, msg, title, id string) {
 
 	switch command {
 	case "add":
@@ -13,7 +13,10 @@ func ReadCommands(command, msg, title string) {
 	case "rm":
 		Todo.Remove(msg)
 	case "lt":
-		Todo.ListTodo()
+		arr := Todo.ListTask("./task.todo")
+		Todo.ConsoleTodo(arr)
+	case "done":
+		Todo.CompleteTodo(id)
 	default:
 		fmt.Println("invalid command")
 	}
