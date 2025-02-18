@@ -14,6 +14,9 @@ func ReadCommands(command, msg, title, id string) {
 		Todo.Remove(msg)
 	case "lt":
 		arr := Todo.ListTask("./task.todo")
+		Todo.ConsoleTask(arr)
+	case "lc":
+		arr := Todo.ListTask("./completed.todo")
 		Todo.ConsoleTodo(arr)
 	case "done":
 		Todo.CompleteTodo(id)

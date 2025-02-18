@@ -13,7 +13,7 @@ import (
 )
 
 func FormatTask(newuuid interface{}, title, msg string) string {
-	formatedMessage := fmt.Sprintf("###START######ID###%s###TITLE###%s###MESSAGE###%s###END###", newuuid, title, msg)
+	formatedMessage := fmt.Sprintf("###ID###%s###TITLE###%s###MESSAGE###%s", newuuid, title, msg)
 	encodedMessage := base64.StdEncoding.EncodeToString([]byte(formatedMessage))
 	return encodedMessage + "\n"
 }
@@ -41,11 +41,14 @@ func AddTodo(msg, title string) {
 		title = "Task"
 	}
 
-	matched, err := regexp.MatchString(`###end###`, title)
-	matched2, err := regexp.MatchString(`###END###`, msg)
+	words := []string{"###ID###", "###TITLE###", "###MESSAGE###", "###TIME###"}
+	pattern := fmt.Sprintf(`\b(%s|%s|%s|%s)\b`, words[0], words[1], words[2], words[3])
+
+	matched, err := regexp.MatchString(pattern, title)
+	matched2, err := regexp.MatchString(pattern, msg)
 
 	if matched || matched2 {
-		log.Fatal("###END### and ###end### are reserved keywords you can not use it.")
+		log.Fatal(" ###ID###,###TITLE###, ###TIME### and ###MESSAGE### are reserved keywords you can not use it.")
 		return
 	}
 
