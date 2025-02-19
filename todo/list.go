@@ -18,18 +18,27 @@ type Task struct {
 }
 
 func DestructureTask(task string) (string, string, string, string) {
+	if task == "" {
+		return "", "", "", ""
+	}
 	idPosition := strings.Index(task, "###ID###")
 	titlePosition := strings.Index(task, "###TITLE###")
 	messagePosition := strings.Index(task, "###MESSAGE###")
 	timePosition := strings.Index(task, "###TIME###")
-	id := task[idPosition+8 : titlePosition]
-	title := task[titlePosition+11 : messagePosition]
-	var message, time string
-	if timePosition == -1 {
-		message = task[messagePosition+13:]
-	} else {
-		message = task[messagePosition+13 : timePosition]
-		time = task[timePosition+10:]
+	var id, title, message, time string
+	if idPosition != -1 && titlePosition != -1 {
+		id = task[idPosition+8 : titlePosition]
+	}
+	if titlePosition != -1 && messagePosition != -1 {
+		title = task[titlePosition+11 : messagePosition]
+	}
+	if messagePosition != -1 {
+		if timePosition == -1 {
+			message = task[messagePosition+13:]
+		} else {
+			message = task[messagePosition+13 : timePosition]
+			time = task[timePosition+10:]
+		}
 	}
 
 	return id, title, message, time

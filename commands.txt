@@ -1,4 +1,5 @@
-go run main.go -a=done -id=a45d6002-0149-4dc6-8cb5-c42ca102cc0a
+go run main.go -a=done -id=3a68b4ae-a8cc-4f93-bdc7-f878f85295c7
 go run main.go -a=lt
 go run main.go -a=lc
-go run main.go -a=add -m="spider man is strong adfjsioa fodsajiofsd aofjsdadoifj doasifj dosiajfodsaf"
+go run main.go -a=add -m="spider man"
+go run main.go -a=rm -id=3a68b4ae-a8cc-4f93-bdc7-f878f85295c7

@@ -11,7 +11,7 @@ func ReadCommands(command, msg, title, id string) {
 	case "add":
 		Todo.AddTodo(msg, title)
 	case "rm":
-		Todo.Remove(msg)
+		Todo.Remove(id)
 	case "lt":
 		arr := Todo.ListTask("./task.todo")
 		Todo.ConsoleTask(arr)
